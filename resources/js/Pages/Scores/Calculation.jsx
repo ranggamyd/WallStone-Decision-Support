@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, usePage } from "@inertiajs/react";
 import React, { useMemo } from "react";
-import MathJax from "react-mathjax";
+// import MathJax from "react-mathjax";
 
 export default function Calculation({ auth }) {
   const { scores, criterias, alternatives } = usePage().props;
@@ -386,7 +386,7 @@ export default function Calculation({ auth }) {
                   <h2 className="text-lg font-semibold mb-4">
                     Rumus-Rumus TOPSIS
                   </h2>
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                     <h3 className="font-semibold">Matriks Normalisasi</h3>
                     <MathJax.Provider>
                       <MathJax.Node
@@ -455,7 +455,7 @@ export default function Calculation({ auth }) {
                         formula={"C_i = \\frac{d^-_i}{d^+_i + d^-_i}"}
                       />
                     </MathJax.Provider>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

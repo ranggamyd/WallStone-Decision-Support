@@ -1,5 +1,5 @@
 import Checkbox from "@/Components/Checkbox";
-import CheckBoxInput from "@/Components/CheckBoxInput";
+// import CheckBoxInput from "@/Components/CheckBoxInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import Modal from "@/Components/Modal";

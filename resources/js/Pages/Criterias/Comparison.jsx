@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CircleCheck, CircleX, Save, SaveOff } from "lucide-react";

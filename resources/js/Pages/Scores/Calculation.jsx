@@ -1,12 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, usePage } from "@inertiajs/react";
 import React, { useMemo } from "react";
-// import MathJax from "react-mathjax";
 
 export default function Calculation({ auth }) {
   const { scores, criterias, alternatives } = usePage().props;
 
-  // Step 1: Membuat matriks keputusan
   const decisionMatrix = useMemo(() => {
     const matrix = {};
 
@@ -25,7 +23,6 @@ export default function Calculation({ auth }) {
     return matrix;
   }, [alternatives, criterias, scores]);
 
-  // Step 2: Normalisasi matriks keputusan
   const normalizedMatrix = useMemo(() => {
     const normalized = {};
 
@@ -46,7 +43,6 @@ export default function Calculation({ auth }) {
     return normalized;
   }, [decisionMatrix, alternatives, criterias]);
 
-  // Step 3: Pembobotan matriks normalisasi
   const weightedMatrix = useMemo(() => {
     const weighted = {};
 
@@ -62,7 +58,6 @@ export default function Calculation({ auth }) {
     return weighted;
   }, [normalizedMatrix, alternatives, criterias]);
 
-  // Step 4: Menentukan solusi ideal positif dan negatif
   const idealPositive = useMemo(() => {
     const ideal = {};
 
@@ -70,11 +65,11 @@ export default function Calculation({ auth }) {
       ideal[criteria.id] =
         criteria.type === "Benefit"
           ? Math.max(
-              ...Object.values(weightedMatrix).map((row) => row[criteria.id])
-            )
+            ...Object.values(weightedMatrix).map((row) => row[criteria.id])
+          )
           : Math.min(
-              ...Object.values(weightedMatrix).map((row) => row[criteria.id])
-            );
+            ...Object.values(weightedMatrix).map((row) => row[criteria.id])
+          );
     });
 
     return ideal;
@@ -87,17 +82,16 @@ export default function Calculation({ auth }) {
       ideal[criteria.id] =
         criteria.type === "Benefit"
           ? Math.min(
-              ...Object.values(weightedMatrix).map((row) => row[criteria.id])
-            )
+            ...Object.values(weightedMatrix).map((row) => row[criteria.id])
+          )
           : Math.max(
-              ...Object.values(weightedMatrix).map((row) => row[criteria.id])
-            );
+            ...Object.values(weightedMatrix).map((row) => row[criteria.id])
+          );
     });
 
     return ideal;
   }, [weightedMatrix, criterias]);
 
-  // Step 5: Menghitung jarak dari solusi ideal
   const distances = useMemo(() => {
     const dist = {};
 
@@ -108,12 +102,12 @@ export default function Calculation({ auth }) {
       criterias.forEach((criteria) => {
         dPositive += Math.pow(
           weightedMatrix[alternative.id][criteria.id] -
-            idealPositive[criteria.id],
+          idealPositive[criteria.id],
           2
         );
         dNegative += Math.pow(
           weightedMatrix[alternative.id][criteria.id] -
-            idealNegative[criteria.id],
+          idealNegative[criteria.id],
           2
         );
       });
@@ -127,7 +121,6 @@ export default function Calculation({ auth }) {
     return dist;
   }, [alternatives, criterias, weightedMatrix, idealPositive, idealNegative]);
 
-  // Step 6: Menghitung nilai preferensi
   const preferences = useMemo(() => {
     const prefs = {};
 
@@ -152,45 +145,75 @@ export default function Calculation({ auth }) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+          {/* Matriks Keputusan */}
           <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <section className="w-full">
+              <header>
+                <h2 className="text-lg font-medium text-gray-900">
+                  Matriks Keputusan (X)
+                </h2>
+              </header>
+            </section>
+
+            <div className="border rounded-lg divide-y divide-gray-200 shadow mt-4">
+              <div className="overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50 h-[52px]">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="lg:w-[200px] px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase"
+                      >
+                        Alternatif
+                      </th>
+                      {criterias.map((criteria) => (
+                        <th
+                          key={criteria.id}
+                          scope="col"
+                          className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase"
+                        >
+                          {criteria.name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {alternatives.map((alternative) => (
+                      <tr
+                        key={alternative.id}
+                        className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
+                      >
+                        <th
+                          scope="col"
+                          className="bg-gray-50 border-r px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase"
+                        >
+                          {alternative.name}
+                        </th>
+                        {criterias.map((criteria) => (
+                          <td
+                            key={criteria.id}
+                            className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-800"
+                          >
+                            {decisionMatrix[alternative.id][
+                              criteria.id
+                            ].toLocaleString("id-ID", {
+                              maximumFractionDigits: 5,
+                            })}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <div className="flex flex-col">
               <div className="-m-1.5 overflow-x-auto">
                 <div className="p-1.5 min-w-full inline-block align-middle">
-                  {/* Step 1: Matriks Keputusan */}
-                  <h2 className="text-lg font-semibold mb-4">
-                    1. Matriks Keputusan
-                  </h2>
-                  <table className="min-w-full border mb-8">
-                    <thead>
-                      <tr>
-                        <th className="px-4 py-2 border">Alternatif</th>
-                        {criterias.map((criteria) => (
-                          <th key={criteria.id} className="px-4 py-2 border">
-                            {criteria.name}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {alternatives.map((alternative) => (
-                        <tr key={alternative.id}>
-                          <td className="px-4 py-2 border">
-                            {alternative.name}
-                          </td>
-                          {criterias.map((criteria) => (
-                            <td key={criteria.id} className="px-4 py-2 border">
-                              {decisionMatrix[alternative.id][
-                                criteria.id
-                              ].toLocaleString("id-ID", {
-                                maximumFractionDigits: 5,
-                              })}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
                   {/* Step 2: Matriks Normalisasi */}
                   <h2 className="text-lg font-semibold mb-4">
                     2. Matriks Normalisasi
